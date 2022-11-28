@@ -52,6 +52,7 @@ from Implementations.Nsd.prepare import run as nsd
 from Implementations.Powerdns.prepare import run as powerdns
 from Implementations.Trustdns.prepare import run as trustdns
 from Implementations.Yadifa.prepare import run as yadifa
+from Implementations.Posadis.prepare import run as posadis
 
 ZONE_FILES = "ZoneFiles/"
 QUERIES = "Queries/"

@@ -94,6 +94,7 @@ if __name__ == '__main__':
         cmds.append("maradns")
     if not args.t:
         cmds.append("trustdns")
+    cmds.append('posadis') # TODO: Add option
     processPool = []
     i = 0
     j = len(cmds)
