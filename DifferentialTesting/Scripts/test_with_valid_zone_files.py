@@ -80,6 +80,7 @@ def get_ports(input_args: Namespace) -> Dict[str, Tuple[bool, int]]:
     implementations['coredns'] = (not input_args.c, 8500)
     implementations['maradns'] = (not input_args.m, 8600)
     implementations['trustdns'] = (not input_args.t, 8700)
+    implementations['posadis']=(True,8800)
     return implementations
 
 
