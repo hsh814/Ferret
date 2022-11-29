@@ -101,7 +101,7 @@ def remove_container(cid: int) -> None:
         sys.exit(f'Error in executing Docker ps command: {output}')
     all_container_names = [name[1:-1] for name in output.strip().split("\n")]
     servers = ["_bind_server", "_nsd_server", "_knot_server", "_powerdns_server",
-               "_maradns_server", "_yadifa_server", "_trustdns_server", "_coredns_server"]
+               "_maradns_server", "_yadifa_server", "_trustdns_server", "_coredns_server", "_posadis_server", "_djbdns_server"]
     for server in servers:
         # Force remove the container if it is running
         if str(cid) + server in all_container_names:
