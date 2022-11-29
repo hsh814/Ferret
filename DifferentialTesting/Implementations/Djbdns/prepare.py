@@ -8,6 +8,7 @@ port 53, which is mapped to a host port.
 
 import pathlib
 import subprocess
+import os
 
 
 def run(zone_file: pathlib.Path, zone_domain: str, cname: str, port: int, restart: bool, tag: str) -> None:
@@ -20,40 +21,48 @@ def run(zone_file: pathlib.Path, zone_domain: str, cname: str, port: int, restar
                         or reuse the existing container
     :param tag: The image tag to be used if restarting the container
     """
+    cur_dir = os.path.dirname(os.path.abspath(__file__))
+    os.makedirs(os.path.join(cur_dir, "zone"), exist_ok=True)
+    converted_file = f"{cur_dir}/zone/{zone_file.name}"
+    if not os.path.exists(f"{cur_dir}/bind-to-tinydns/bind-to-tinydns"):
+        subprocess.run(["make"], cwd=f"{cur_dir}/bind-to-tinydns", check=True)
+    if os.path.exists(f"{cur_dir}/bind-to-tinydns/bind-to-tinydns"):
+        with open(zone_file, "r") as zone:
+            subprocess.run([f"{cur_dir}/bind-to-tinydns/bind-to-tinydns", zone_domain, converted_file, f"{cur_dir}/zone/tmp.txt"], stdin=zone, check=True)
     if restart:
         subprocess.run(['docker', 'container', 'rm', cname, '-f'],
                        stdout=subprocess.PIPE, check=False)
         subprocess.run(['docker', 'run', '-dp', str(port)+':53/udp',
-                        '--name=' + cname, 'bind' + tag],
+                        '--name=' + cname, 'djbdns' + tag],
                        stdout=subprocess.PIPE, check=False)
     else:
         # Kill the running server instance inside the container
         subprocess.run(
             ['docker', 'exec', cname, 'pkill', 'tinydns'], check=False)
     # Copy the new zone file into the container
-    subprocess.run(['docker', 'cp', str(zone_file), cname +
-                    ':/usr/local/etc'], stdout=subprocess.PIPE, check=False)
+    subprocess.run(['docker', 'cp', converted_file, cname +
+                    ':/etc/tinydns/root/data'], check=False)
     # Create the Bind-specific configuration file
-    named = f'''
-    options{{
-    recursion no;
-    }};
+    # named = f'''
+    # options{{
+    # recursion no;
+    # }};
 
-    zone "{zone_domain}" {{
-        type master;
-        check-names ignore;
-        file "{"/usr/local/etc/"+ zone_file.name}";
-    }};
-    '''
-    with open('named_'+cname+'.conf', 'w') as file_pointer:
-        file_pointer.write(named)
-    # Copy the configuration file into the container as "named.conf"
-    subprocess.run(['docker', 'cp', 'named_'+cname+'.conf', cname +
-                    ':/usr/local/etc/named.conf'], stdout=subprocess.PIPE, check=False)
-    pathlib.Path('named_'+cname+'.conf').unlink()
+    # zone "{zone_domain}" {{
+    #     type master;
+    #     check-names ignore;
+    #     file "{"/usr/local/etc/"+ zone_file.name}";
+    # }};
+    # '''
+    # with open('named_'+cname+'.conf', 'w') as file_pointer:
+    #     file_pointer.write(named)
+    # # Copy the configuration file into the container as "named.conf"
+    # subprocess.run(['docker', 'cp', 'named_'+cname+'.conf', cname +
+    #                 ':/usr/local/etc/named.conf'], stdout=subprocess.PIPE, check=False)
+    # pathlib.Path('named_'+cname+'.conf').unlink()
     # Start the server - When 'named' is run, Bind first reads the "named.conf" file to know
     #                   the settings and where the zone files are
-    subprocess.run(['docker', 'exec', cname, 'named'],
+    subprocess.run(['docker', 'exec', "-w", "/etc/tinydns/root", cname, 'tinydns-data'],
                    stdout=subprocess.PIPE, check=False)
-    subprocess.run(['docker', 'exec', cname, 'rndc', 'flush'],
+    subprocess.run(['docker', 'exec', cname, '/etc/tinydns/run'],
                    stdout=subprocess.PIPE, check=False)

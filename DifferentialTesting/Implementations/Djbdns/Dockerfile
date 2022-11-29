@@ -33,7 +33,8 @@ RUN useradd -s /bin/false tinydns && \
 RUN echo gcc -O2 -include /usr/include/errno.h > conf-cc && \
   make && \
   make setup check && \
-  tinydns-conf root root /etc/tinydns 0.0.0.0
+  tinydns-conf djbdns dnslog /etc/tinydns 0.0.0.0
 
+WORKDIR /etc/tinydns
 # Run eternal loop
 CMD ["/bin/bash", "-c", "while :; do sleep 10; done"]
