@@ -3,7 +3,7 @@ MAINTAINER Seungheon Han <hsh814@naver.com>
 
 RUN mkdir /djbdns
 
-COPY ./djbdns-1.05.tar.gz /djbdns/djbdns-1.05.tar.gz
+COPY Djbdns/djbdns-1.05.tar.gz /djbdns/djbdns-1.05.tar.gz
 
 ENV TZ=Asia/Seoul
 ENV DEBIAN_FRONTEND=noninteractive
@@ -25,6 +25,10 @@ WORKDIR /djbdns
 RUN tar -xzvf djbdns-1.05.tar.gz
 
 WORKDIR /djbdns/djbdns-1.05
+
+RUN useradd -s /bin/false tinydns && \
+  useradd -s /bin/false dnslog && \
+  useradd -s /bin/false axfrdns
 
 RUN echo gcc -O2 -include /usr/include/errno.h > conf-cc && \
   make && \

@@ -95,6 +95,7 @@ if __name__ == '__main__':
     if not args.t:
         cmds.append("trustdns")
     cmds.append('posadis') # TODO: Add option
+    cmds.append('djbdns')
     processPool = []
     i = 0
     j = len(cmds)
