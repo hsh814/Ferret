@@ -18,7 +18,7 @@ def run(zone_file: pathlib.Path, zone_domain: str, cname: str, port: int, restar
         subprocess.run(['docker', 'container', 'rm', cname, '-f'],
                         stdout=subprocess.PIPE, check=False)
         subprocess.run(['docker', 'run', '-dp', str(port)+':53/udp',
-                        '--name=' + cname, 'bind' + tag],
+                        '--name=' + cname, 'posadis' + tag],
                         stdout=subprocess.PIPE, check=False)
     else:
         # Kill the running server instance inside the container

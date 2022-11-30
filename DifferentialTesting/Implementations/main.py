@@ -36,6 +36,7 @@ from Powerdns.prepare import run as powerdns
 from Trustdns.prepare import run as trustdns
 from Yadifa.prepare import run as yadifa
 from Posadis.prepare import run as posadis
+from Djbdns.prepare import run as djbdns
 
 
 def load_and_serve_zone_file(zone_file: pathlib.Path,

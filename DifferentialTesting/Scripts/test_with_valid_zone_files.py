@@ -39,6 +39,7 @@ from datetime import datetime
 from multiprocessing import Process
 from typing import Any, Dict, List, Optional, TextIO, Tuple, Union
 
+import os
 import dns.message
 import dns.query
 import dns.rdataclass
@@ -53,6 +54,7 @@ from Implementations.Powerdns.prepare import run as powerdns
 from Implementations.Trustdns.prepare import run as trustdns
 from Implementations.Yadifa.prepare import run as yadifa
 from Implementations.Posadis.prepare import run as posadis
+from Implementations.Djbdns.prepare import run as djbdns
 
 from Scripts.utils import MyLogger
 
@@ -83,6 +85,7 @@ def get_ports(input_args: Namespace) -> Dict[str, Tuple[bool, int]]:
     implementations['maradns'] = (not input_args.m, 8600)
     implementations['trustdns'] = (not input_args.t, 8700)
     implementations['posadis']=(True,8800)
+    implementations['djbdns'] = (True, 8900)
     return implementations
 
 
@@ -100,7 +103,7 @@ def remove_container(cid: int) -> None:
         sys.exit(f'Error in executing Docker ps command: {output}')
     all_container_names = [name[1:-1] for name in output.strip().split("\n")]
     servers = ["_bind_server", "_nsd_server", "_knot_server", "_powerdns_server",
-               "_maradns_server", "_yadifa_server", "_trustdns_server", "_coredns_server"]
+               "_maradns_server", "_yadifa_server", "_trustdns_server", "_coredns_server", "_posadis_server", "_djbdns_server"]
     for server in servers:
         # Force remove the container if it is running
         if str(cid) + server in all_container_names:
