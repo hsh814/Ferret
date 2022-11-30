@@ -20,6 +20,9 @@ class MyLogger(TextIO):
         if self.log_file is not None:
             self.log_file.close()
 
+    def close(self):
+        self.__del__()
+
     def write(self, msg:str):
         if self.log_file is not None:
             self.log_file.write(msg)

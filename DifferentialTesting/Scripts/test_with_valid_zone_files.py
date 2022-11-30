@@ -432,24 +432,26 @@ def run_tests(parent_directory_path: pathlib.Path,
     start_containers(input_args.id, implementations, tag)
     # Create and dump logs to a file
     # with open(parent_directory_path / (str(input_args.id) + '_log.txt'), 'w', 1) as log_fp:
-    with MyLogger(parent_directory_path / (str(input_args.id) + '_log.txt'), 1) as log_fp:
-        for zone in sorted((parent_directory_path / ZONE_FILES).iterdir(),
-                           key=lambda x: int(x.stem))[start:end]:
-            log_fp.write(f'{datetime.now()}\tChecking zone: {zone.stem}\n')
-            run_test(zone.stem, parent_directory_path, errors,
-                     input_args.id, implementations, log_fp, tag)
-            i += 1
-            if i % 25 == 0:
-                log_fp.write(
-                    f'{datetime.now()}\tTime taken for {start + i - 25} - {start + i}: '
-                    f'{time.time()-sub_timer}s\n')
-                sub_timer = time.time()
-        log_fp.write(
-            f'{datetime.now()}\tTotal time for checking from {start}-{end if end else i}: '
-            f'{time.time()-timer}s\n')
-        log_fp.write("Errors:\n")
-        log_fp.write(str(errors))
-        remove_container(input_args.id)
+    # with MyLogger(parent_directory_path / (str(input_args.id) + '_log.txt'), 1) as log_fp:
+    log_fp=MyLogger(parent_directory_path / (str(input_args.id) + '_log.txt'), 1)
+    for zone in sorted((parent_directory_path / ZONE_FILES).iterdir(),
+                        key=lambda x: int(x.stem))[start:end]:
+        log_fp.write(f'{datetime.now()}\tChecking zone: {zone.stem}\n')
+        run_test(zone.stem, parent_directory_path, errors,
+                    input_args.id, implementations, log_fp, tag)
+        i += 1
+        if i % 25 == 0:
+            log_fp.write(
+                f'{datetime.now()}\tTime taken for {start + i - 25} - {start + i}: '
+                f'{time.time()-sub_timer}s\n')
+            sub_timer = time.time()
+    log_fp.write(
+        f'{datetime.now()}\tTotal time for checking from {start}-{end if end else i}: '
+        f'{time.time()-timer}s\n')
+    log_fp.write("Errors:\n")
+    log_fp.write(str(errors))
+    log_fp.close()
+    remove_container(input_args.id)
 
 
 def check_non_negative(value: str) -> int:
