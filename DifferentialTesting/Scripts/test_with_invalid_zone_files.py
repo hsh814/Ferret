@@ -273,7 +273,7 @@ def run_tests_helper(input_args: Namespace,
         generate_groot_image(logger)
         # Start the container for the GRoot
         delete_container('groot_server')
-        cmd = "docker run -d --name=groot_server groot:ferret"
+        cmd = "docker run -d --name=groot_server groot:ferret" 
         subprocess.run(cmd, shell=True, check=False)
         (input_dir / DIFFERENCES).mkdir(parents=True, exist_ok=True)
         (input_dir / EQUIVALENCE_CLASSES_DIR).mkdir(parents=True, exist_ok=True)

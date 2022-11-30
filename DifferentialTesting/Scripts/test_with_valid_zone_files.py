@@ -54,6 +54,8 @@ from Implementations.Trustdns.prepare import run as trustdns
 from Implementations.Yadifa.prepare import run as yadifa
 from Implementations.Posadis.prepare import run as posadis
 
+from Scripts.utils import MyLogger
+
 ZONE_FILES = "ZoneFiles/"
 QUERIES = "Queries/"
 QUERY_RESPONSES = "ExpectedResponses/"
@@ -426,7 +428,8 @@ def run_tests(parent_directory_path: pathlib.Path,
         tag = ':latest'
     start_containers(input_args.id, implementations, tag)
     # Create and dump logs to a file
-    with open(parent_directory_path / (str(input_args.id) + '_log.txt'), 'w', 1) as log_fp:
+    # with open(parent_directory_path / (str(input_args.id) + '_log.txt'), 'w', 1) as log_fp:
+    with MyLogger(parent_directory_path / (str(input_args.id) + '_log.txt'), 1) as log_fp:
         for zone in sorted((parent_directory_path / ZONE_FILES).iterdir(),
                            key=lambda x: int(x.stem))[start:end]:
             log_fp.write(f'{datetime.now()}\tChecking zone: {zone.stem}\n')
