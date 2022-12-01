@@ -64,5 +64,5 @@ def run(zone_file: pathlib.Path, zone_domain: str, cname: str, port: int, restar
     #                   the settings and where the zone files are
     subprocess.run(['docker', 'exec', "-w", "/etc/tinydns/root", cname, 'tinydns-data'],
                    stdout=subprocess.PIPE, check=False)
-    p = subprocess.Popen(['docker', 'exec', cname, "-w", "/etc/tinydns", '/etc/tinydns/run'],
+    p = subprocess.Popen(['docker', 'exec', "-w", "/etc/tinydns", cname, '/etc/tinydns/run'],
                    stdout=subprocess.PIPE)
