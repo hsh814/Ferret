@@ -23,6 +23,8 @@ optional arguments:
   -y                    Disable Yadifa. (default: False)
   -m                    Disable MaraDns. (default: False)
   -t                    Disable TrustDns. (default: False)
+  -s                    Disable Posadis. (default: False)
+  -d                    Disable Djbdns. (default: False)
   -l, --latest          Test using latest image tag. (default: False)
 """
 #!/usr/bin/env python3
@@ -84,8 +86,8 @@ def get_ports(input_args: Namespace) -> Dict[str, Tuple[bool, int]]:
     implementations['coredns'] = (not input_args.c, 8500)
     implementations['maradns'] = (not input_args.m, 8600)
     implementations['trustdns'] = (not input_args.t, 8700)
-    implementations['posadis']=(True,8800)
-    implementations['djbdns'] = (True, 8900)
+    implementations['posadis']=(not input_args.s,8800)
+    implementations['djbdns'] = (not input_args.d, 8900)
     return implementations
 
 
@@ -487,6 +489,8 @@ if __name__ == '__main__':
     parser.add_argument('-y', help='Disable Yadifa.', action="store_true")
     parser.add_argument('-m', help='Disable MaraDns.', action="store_true")
     parser.add_argument('-t', help='Disable TrustDns.', action="store_true")
+    parser.add_argument('-s', help='Disable Posadis.', action="store_true")
+    parser.add_argument('-d', help='Disable Djbdns.', action="store_true")
     parser.add_argument(
         '-l', '--latest', help='Test using latest image tag.', action="store_true")
 
