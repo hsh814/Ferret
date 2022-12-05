@@ -346,3 +346,6 @@ MigrationBackup/
 .vscode/
 
 Results/
+
+Differences.tar.gz
+Differences

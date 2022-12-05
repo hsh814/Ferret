@@ -40,5 +40,7 @@ RUN make install
 RUN cp posadisrc /etc
 RUN mkdir /etc/posadis
 
+COPY db.campus.edu /etc/posadis
+
 WORKDIR /root
 CMD ["/bin/bash", "-c", "while :; do sleep 10; done"] 

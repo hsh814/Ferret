@@ -26,7 +26,7 @@ def run(zone_file: pathlib.Path, zone_domain: str, cname: str, port: int, restar
             ['docker', 'exec', cname, 'pkill', 'posadis'], check=False)
     # Copy the new zone file into the container
     subprocess.run(['docker', 'cp', str(zone_file), cname +
-                    f':/etc/posadis/{zone_domain}.prm'], stdout=subprocess.PIPE, check=False)
+                    f':/etc/posadis/zn.{zone_domain}'], stdout=subprocess.PIPE, check=False)
 
     # Start the server
     subprocess.run(['docker', 'exec', '-d', cname, 'posadis'],
