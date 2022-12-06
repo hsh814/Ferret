@@ -349,3 +349,5 @@ Results/
 
 Differences.tar.gz
 Differences
+DifferentialTesting/Implementation/Posadis/rc_*
+DifferentialTesting/Implementation/Posadis/*.txt

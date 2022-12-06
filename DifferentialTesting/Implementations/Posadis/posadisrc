@@ -1,0 +1,245 @@
+;
+; Posadisrc - Configuration file for Posadis
+;
+; For help, consult the manual shipped with Posadis, or have a look at the
+; Posadisrc(5) manual page ("man posadisrc").
+;
+
+; -------------------------- General Configuration --------------------------
+
+; Listen - this setting determines on what IP numbers and/or ports to listen.
+;
+; Normally, you can just use the default "listen any" line to listen to port
+; 53 for all network interfaces, but if you run a multi-homed host, or if you
+; only want to listen to a specific network interface. If you only want to
+; listen to tcp or udp, prefix the IP address by "tcp/" or "udp/".
+;
+; NOTE: If you have Microsoft Internet Connection Sharing, you'll want to
+; listen to your internet-visible IP number only, because ICS has its own
+; DNS server for internal networks that (despite of what its documentation
+; says) cannot be disabled.
+
+listen any                      ; listen on any network interface
+;listen 3000                     ; listen to port 3000 on any network interface
+;listen 127.0.0.1, 192.168.1.100 ; only listen to local network interfaces
+;listen udp/212.142.28.66        ; only listen to UDP on internet interface
+
+; Logfile - file to log to
+;
+; This file will be used to send log messages to. Since Posadis for Unix
+; will also log to syslog, you will probably not need this (default is no log
+; file for Unix).
+
+logfile /var/posadis/posadis.log
+
+; Do_query_logging - enable/disable query logging
+;
+; Determines whether to enable query logging. If set to true, Posadis will log
+; each query to the usual channels. Note that you can temporarily enable
+; logging even if this is set to false (which is the default setting) by
+; sending a signal to the Posadis process (Unix only). See the manual for
+; more details.
+
+;do_query_logging true
+
+; User/Group (Unix only) - run unprivileged
+;
+; To reduce security risks when Posadis is exploited remotely, you can make
+; Posadis drop privileges after binding to the sockets. Note that data files
+; should be readable by this user as well as root.
+
+;user dns
+;group dns
+
+; Max_threads, Max_tcp_connections, Tcp_priority, Max_cache_items,
+; Resolv_patience - resource limitations
+;
+; These options set limits to the resources Posadis can use. For detailed
+; information, refer to the manual. The defaults are usually reasonable.
+
+;max_threads 50         ; no more than 50 simultaneous threads
+;max_tcp_connections -1 ; this means no limit
+;tcp_priority 192.168.* ; always allow TCP connections from this network
+;max_cache_items 1000   ; max 1000 domain names in cache
+;resolv_patience 15     ; max number of steps in resolving lookups
+
+; ------------------------------- Cache setup -------------------------------
+
+; Cache-ns: list of root nameservers
+;
+; This is the list of root nameservers Posadis uses initially. Note that even
+; if you don't want to have a caching nameserver or if you use forwarders, you
+; still need this! You can generally just keep this, or use the
+; posadis-getroots tool to get an updated or alternate list.
+
+cache-ns .
+  A.ROOT-SERVERS.NET.@198.41.0.4
+  B.ROOT-SERVERS.NET.@128.9.0.107
+  C.ROOT-SERVERS.NET.@192.33.4.12
+  D.ROOT-SERVERS.NET.@128.8.10.90
+  E.ROOT-SERVERS.NET.@192.203.230.10
+  F.ROOT-SERVERS.NET.@192.5.5.241
+  G.ROOT-SERVERS.NET.@192.112.36.4
+  H.ROOT-SERVERS.NET.@128.63.2.53
+  I.ROOT-SERVERS.NET.@192.36.148.17
+  J.ROOT-SERVERS.NET.@192.58.128.30
+  K.ROOT-SERVERS.NET.@193.0.14.129
+  L.ROOT-SERVERS.NET.@198.32.64.12
+  M.ROOT-SERVERS.NET.@202.12.27.33
+
+; Initial_Cache_File: loading of initial cache data
+;
+; Loads initial cache data from the given master file, for example to blacklist
+; certain domain names.
+
+;initial_cache_file blacklist.cache
+       
+; Cache-forward: forwarding of DNS queries
+;
+; Instead of doing everything by itself, Posadis can also let the DNS server
+; of your provider do the dirty work, while still caching the results of the
+; lookups to gain even more speed. This is a good choice if your ISP has a
+; well-reachable DNS server.
+
+;cache-forward .
+;  1.2.3.4             ; ISP primary DNS server
+;  5.6.7.8             ; ISP primary DNS server
+;  1dea:332::dead:beef ; the ISP also does IPv6
+
+; Allow_recursion - Whom to allow recursion to
+;
+; If given, only hosts in this list are allowed recursion. Because recursion
+; can consume quite some resources, you should usually limit this to just
+; your local network. Default is to allow recursion to anybody.
+
+;allow_recursion 192.168.* ; just the local network
+;allow_recursion none      ; no-one!
+
+; Refuse_recursion - Whom to  refuse recursion to
+;
+; Anyone in this list will be refused recursion, whether or not the person is
+; in the allow list doesn't matter.
+
+;refuse_recursion any          ; disable recursion altogether
+                               ; (same as allow_recursion none)
+;refuse_recursion 192.168.1.17 ; this pc is not allowed to do recursion
+
+; Cache_statistics - Display statistics about cache
+;
+; If this is set to true, Posadis will periodically (that is, every 60
+; seconds) display statics about the cache: the number of domain names
+; and records stored, and the number of cache hits/misses. Defaults to false.
+
+;cache_statistics true ; display cache statistics
+
+; ----------------------------- Loading modules -----------------------------
+
+; LibDir - Directory for loadable modules
+;
+; This is the directory Posadis will look in for loadable modules. You can
+; specify as many directories as you want.
+
+;libdir /usr/lib/posadis, /opt/posfile/lib
+
+; LoadModule - Load a Posadis module
+;
+; This statement loads a Posadis module. Modules can add custom behavior to
+; Posadis such as definining new zone types and configuration settings. Refer
+; to the documentation for the module to see how to use it;
+
+; Load the Localhost module, which is a core part of Posadis. This module
+; defines the 'localhost' zone type. See the reference for more information.
+;loadmodule "localhost"
+
+; Load the revmap module, also included in Posadis. This module defines the
+; 'revmap' and 'formap' zone types. See the reference for more information.
+;loadmodule "revmap"
+
+; -------------------------- Zone and Master files --------------------------
+
+; Configdir - Configuration directory
+;
+; This is the directory Posadis will look in for zone and master files.
+
+configdir /etc/posadis/
+
+; Datadir - Data directory
+;
+; Required as temporary storage for both serving and retrieving zone transfers
+
+datadir /var/posadis/
+
+; Now is the time to add zone and master files to the Posadis configuration.
+; There are basically three different ways of doing this:
+;
+;   1) Use the "monitor" module. This module automagically loads all zone files
+;      in your configuration directory, and re-loads them when you change them,
+;      so your changes are reflected directly. To do this, add a
+;      "LoadModule monitor" statement to your Posadisrc. Note: if you run a
+;      Unix operating system, you will need to have the "FAM" software package
+;      installed. If you install Posadis from binary packages, you will also
+;      need to install the "Posadis-monitor" package.
+;
+;   2) Use zone files. For primary zones, you can create standard DNS master
+;      files, for example using the Posadis Master File Editor, and for other
+;      zones, you can create zone files in which you specify configuration
+;      settings for the zone. Posadis comes with some examples, and you can
+;      read more information in the Posadis manual. Use the 'ZoneFile' and/or
+;      'All_Zone_Files' configuration settings. These zone files will be
+;      re-loaded according to the 'Zone_Update_TTL' statement.
+;
+;   3) Use the 'zone' statement. If you don't want zone files hanging around,
+;      you can also embed them into the Posadisrc.
+
+;LoadModule monitor ; Load the monitoring module
+
+; ZoneFile  - Load a zone file into Posadis
+;
+; This statement loads a zone file from the Posadis configuration directory
+; into Posadis. Zone file names (for non-primary zones) should be of the format
+; zn.<domainname> or <domainname>.znf. Zone master file names (for primary
+; zones) should be of the format db.<domainname> or <domainname>.prm.
+
+;ZoneFile "zn.acdam.net", "db.acdam.com" ; load acdam zones
+ZoneFile "db.campus.edu"
+
+; All_Zone_Files - Load all zone files
+;
+; If set to true, this statement will load all available zone files and master
+; files in the Posadis configuration directory.
+
+;all_zone_files true
+
+; Update_TTL - Automatically re-load configuration files
+;
+; This determines the interval after which the zone files loaded using
+; 'ZoneFile' or 'All_Zone_Files' will be checked for changes.
+
+;update_ttl 10m ; after ten minutes
+
+; Zone - Add a zone
+;
+; Zone is the basic statement you can use to add zones to your Posadis
+; configuration. It has the syntax zone <type> <domain>, where <type> is the
+; zone type. Posadis has built-in 'primary' and 'secondary' zone types.
+; After the zone statement, you can specify configuration settings for the
+; zone, which should be indented by at least one space to distinguish them
+; from common configuration settings. For more information, refer to the
+; Posadis manual.
+
+;zone primary acdam.net ; create a primary zone for acdam.net
+;  file db.acdam.net    ; the master file is db.acdam.net in the config dir
+;  update_ttl 10m       ; re-load it every ten minutes
+
+;zone secondary acdam.com             ; create a secondary zone for acdam.com
+;  masters 216.31.32.11, 216.31.32.13 ; these are the master DNS servers
+
+;zone localhost localhost.acdam.net ; this zone type is defined by the
+;                                   ; localhost module
+
+;zone revmap .192.168.*                ; zone type from 'revmap' module
+;  prefix dyn.acdam.net
+;  nslist ns1.acdam.net, ns2.acdam.net
+
+;zone formap dyn.acdam.net             ; from 'revmap' module as well
+;  nslist ns1.acdam.net, ns2.acdam.net
