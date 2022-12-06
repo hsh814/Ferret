@@ -363,6 +363,8 @@ def run_test(zoneid: str,
             False, implementations['trustdns'][1])    # TrustDns
         implementations['maradns'] = (
             False, implementations['maradns'][1])    # MaraDns
+        implementations['posadis'] = (
+            False, implementations['posadis'][1])    # Posadis
     total_impl_tested = sum(x[0] for x in list(implementations.values()))
     queries = get_queries(zoneid, total_impl_tested,
                           parent_directory_path, log_fp, errors)
