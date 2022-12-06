@@ -346,8 +346,10 @@ MigrationBackup/
 .vscode/
 
 Results/
+**/Results.tar.gz
 
 Differences.tar.gz
 Differences
-DifferentialTesting/Implementation/Posadis/rc_*
-DifferentialTesting/Implementation/Posadis/*.txt
+DifferentialTesting/Implementations/Posadis/rc_*
+DifferentialTesting/Implementations/Posadis/*.txt
+**/image_generation_log.txt

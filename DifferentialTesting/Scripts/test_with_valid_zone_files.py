@@ -145,6 +145,11 @@ def querier(query_name: str, query_type: str, port: int) -> Union[str, dns.messa
         # Removes the default Recursion Desired Flag
         query.flags = 0
         result = dns.query.udp(query, addr, 3, port=port)
+        if len(result.authority)>0:
+            if 'ROOT-SERVERS.NET.' in result.authority[0].to_text():
+                result.authority=[]
+            if 'ROOT-SERVERS.NET.' in result.additional[0].to_text():
+                result.additional=[]
         return result
     except dns.exception.Timeout:
         return "No response"
