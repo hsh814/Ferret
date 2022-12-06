@@ -346,3 +346,10 @@ MigrationBackup/
 .vscode/
 
 Results/
+**/Results.tar.gz
+
+Differences.tar.gz
+Differences
+DifferentialTesting/Implementations/Posadis/rc_*
+DifferentialTesting/Implementations/Posadis/*.txt
+**/image_generation_log.txt

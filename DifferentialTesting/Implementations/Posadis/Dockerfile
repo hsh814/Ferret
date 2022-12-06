@@ -1,12 +1,13 @@
-FROM ubuntu:22.04
+FROM ubuntu:20.04
 
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
 
 RUN apt-get install -y \
     autoconf \
     automake \
     dnsutils \
-    gcc \
+    gcc g++ \
     git \
     libcap-dev \
     libnghttp2-dev \
@@ -18,7 +19,8 @@ RUN apt-get install -y \
     openssl \
     pkgconf \
     vim \
-    nano
+    nano \
+    fam
 
 COPY Posadis/poslib-1.0.6-modified.tar.gz /root
 COPY Posadis/posadis-0.60.6-modified.tar.gz /root
@@ -39,6 +41,9 @@ RUN make
 RUN make install
 RUN cp posadisrc /etc
 RUN mkdir /etc/posadis
+
+# COPY db.campus.edu /etc/posadis
+COPY Posadis/posadisrc /etc
 
 WORKDIR /root
 CMD ["/bin/bash", "-c", "while :; do sleep 10; done"] 

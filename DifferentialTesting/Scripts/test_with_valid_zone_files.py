@@ -23,6 +23,8 @@ optional arguments:
   -y                    Disable Yadifa. (default: False)
   -m                    Disable MaraDns. (default: False)
   -t                    Disable TrustDns. (default: False)
+  -s                    Disable Posadis. (default: False)
+  -d                    Disable Djbdns. (default: False)
   -l, --latest          Test using latest image tag. (default: False)
 """
 #!/usr/bin/env python3
@@ -84,8 +86,8 @@ def get_ports(input_args: Namespace) -> Dict[str, Tuple[bool, int]]:
     implementations['coredns'] = (not input_args.c, 8500)
     implementations['maradns'] = (not input_args.m, 8600)
     implementations['trustdns'] = (not input_args.t, 8700)
-    implementations['posadis']=(True,8800)
-    implementations['djbdns'] = (True, 8900)
+    implementations['posadis']=(not input_args.s,8800)
+    implementations['djbdns'] = (not input_args.d, 8900)
     return implementations
 
 
@@ -143,6 +145,11 @@ def querier(query_name: str, query_type: str, port: int) -> Union[str, dns.messa
         # Removes the default Recursion Desired Flag
         query.flags = 0
         result = dns.query.udp(query, addr, 3, port=port)
+        if len(result.authority)>0:
+            if 'ROOT-SERVERS.NET.' in result.authority[0].to_text():
+                result.authority=[]
+            if 'ROOT-SERVERS.NET.' in result.additional[0].to_text():
+                result.additional=[]
         return result
     except dns.exception.Timeout:
         return "No response"
@@ -361,6 +368,8 @@ def run_test(zoneid: str,
             False, implementations['trustdns'][1])    # TrustDns
         implementations['maradns'] = (
             False, implementations['maradns'][1])    # MaraDns
+        implementations['posadis'] = (
+            False, implementations['posadis'][1])    # Posadis
     total_impl_tested = sum(x[0] for x in list(implementations.values()))
     queries = get_queries(zoneid, total_impl_tested,
                           parent_directory_path, log_fp, errors)
@@ -487,6 +496,8 @@ if __name__ == '__main__':
     parser.add_argument('-y', help='Disable Yadifa.', action="store_true")
     parser.add_argument('-m', help='Disable MaraDns.', action="store_true")
     parser.add_argument('-t', help='Disable TrustDns.', action="store_true")
+    parser.add_argument('-s', help='Disable Posadis.', action="store_true")
+    parser.add_argument('-d', help='Disable Djbdns.', action="store_true")
     parser.add_argument(
         '-l', '--latest', help='Test using latest image tag.', action="store_true")
 
