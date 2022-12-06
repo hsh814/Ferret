@@ -370,6 +370,8 @@ def run_test(zoneid: str,
             False, implementations['maradns'][1])    # MaraDns
         implementations['posadis'] = (
             False, implementations['posadis'][1])    # Posadis
+        implementations['djbdns'] = (
+            False, implementations['djbdns'][1])    # Djbdns
     total_impl_tested = sum(x[0] for x in list(implementations.values()))
     queries = get_queries(zoneid, total_impl_tested,
                           parent_directory_path, log_fp, errors)
