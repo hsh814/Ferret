@@ -148,6 +148,7 @@ def querier(query_name: str, query_type: str, port: int) -> Union[str, dns.messa
         if len(result.authority)>0:
             if 'ROOT-SERVERS.NET.' in result.authority[0].to_text():
                 result.authority=[]
+        if len(result.additional)>0:
             if 'ROOT-SERVERS.NET.' in result.additional[0].to_text():
                 result.additional=[]
         return result
