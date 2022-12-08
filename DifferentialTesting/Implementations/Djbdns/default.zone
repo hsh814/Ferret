@@ -1,0 +1,5 @@
+Zcampus.edu.:ns1.campus.edu.:root.campus.edu.:3:500:86400:2419200:500
+&campus.edu.::ns1.campus.edu.:500
++host1.campus.edu.:172.20.0.3:500
++host2.campus.edu.:172.20.0.4:500
++ns1.campus.edu.:172.20.0.2:500

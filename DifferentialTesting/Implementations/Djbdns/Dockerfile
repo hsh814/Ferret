@@ -36,6 +36,8 @@ RUN echo gcc -O2 -include /usr/include/errno.h > conf-cc && \
   make setup check && \
   tinydns-conf root root /etc/tinydns 0.0.0.0
 
+COPY Djbdns/default.zone /etc/tinydns/root/data
+
 WORKDIR /etc/tinydns/root
 # Run eternal loop
 CMD ["/bin/bash", "-c", "while :; do sleep 10; done"]
